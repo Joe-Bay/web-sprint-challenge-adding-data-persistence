@@ -21,12 +21,20 @@ router.get('/tasks', (req, res) => {
 })
 
 router.get('/resources', (req, res) => {
-    Projects.getTasks()
+    Projects.getResources()
     .then(resources => {
         res.status(200).json(resources)
     })
     .catch(err => res.status(500).json({ message: err.message }))
 })
+router.get('/:id/tasks', (req, res) => {
+    Projects.getProjectAndTask(req.params.id)
+    .then(project => {
+        res.status(200).json(project)
+    })
+    .catch(err => res.status(500).json({ message: err.message }))
+})
+
 
 router.post('/', (req, res) => {
     const project = req.body
@@ -37,6 +45,24 @@ router.post('/', (req, res) => {
     })
     .catch(err => res.status(500).json({ message: err.message }))
     : res.status(400).json({message: 'Please fill in the name field'})
+})
+router.post('/:id/resources', (req, res) => {
+    const id = req.params.id
+    const resource = req.body
+    Projects.addResource(resource, id)
+    .then(ids => {
+        res.status(201).json(ids)
+    })
+    .catch(err => res.status(500).json({message: err.message}))
+})
+router.post('/:id/tasks', (req, res) => {
+    const id = req.params.id
+    const task = req.body
+    Projects.addTask(task, id)
+    .then(ids => {
+        res.status(201).json(ids)
+    })
+    .catch(err => res.status(500).json({message: err.message}))
 })
 
 
